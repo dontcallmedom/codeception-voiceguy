@@ -1,0 +1,12 @@
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/dontcallmedom/voicebrowser-emulator"
+        }
+    ],
+    "require": {
+        "codeception/codeception": "*",
+	"sbc4d/voicebrowser": "dev-master"
+    }
+}
