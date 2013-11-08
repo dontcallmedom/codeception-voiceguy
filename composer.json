@@ -1,10 +1,16 @@
 {
+    "name": "sbc4d/codeception-voiceguy",
+    "type": "library",
+    "description": "CodeCeption helper to test VoiceXML applications",
     "repositories": [
         {
             "type": "vcs",
             "url": "https://github.com/dontcallmedom/voicebrowser-emulator"
         }
     ],
+    "authors": [
+    	{ "name": "Dominique Hazaël-Massieux"}
+    ], 
     "require": {
         "codeception/codeception": "*",
 	"sbc4d/voicebrowser": "dev-master"
