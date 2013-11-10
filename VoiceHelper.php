@@ -3,8 +3,6 @@ namespace SBC4D;
 use Codeception\Exception\ModuleConfig as ModuleConfigException;
 use VoiceBrowser\VoiceBrowser, VoiceBrowser\VoiceXMLAudioRecord;
 
-require 'vendor/autoload.php';
-
 // here you can define custom functions for VoiceGuy 
 
 class VoiceHelper extends \Codeception\Module
