@@ -32,12 +32,13 @@ class VoiceHelperTest extends \PHPUnit_Framework_TestCase {
 
     public function testSay() {
       $this->module->call('http://localhost:1349/test.vxml', 'GET');
-      //$this->testCall();
+      $this->testCall();
       $this->module->say("tests/data/test.wav", 5000);
     }
 
-    /*    public function testKeepSilent() {
+    public function testKeepSilent() {
       $this->testCall();
       $this->module->keepSilent();
-      }*/
+      $this->module->hearText("So, who are you?");
+    }
 }
