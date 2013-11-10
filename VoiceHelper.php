@@ -76,8 +76,7 @@ class VoiceHelper extends \Codeception\Module
 	}
 	$output = $this->readGenerator->next();
       }
-      return array('True', false);
-      
+      $this->fail("didn't hear “".$text."”");
     }
 
     public function hearAudio($filename) {
@@ -102,7 +101,7 @@ class VoiceHelper extends \Codeception\Module
 	    }
 	  }
 	}
-	$output = $this->readGenerator->next();
+	$this->readGenerator->next();
       }
       return array('True', false);
     }
@@ -137,21 +136,32 @@ class VoiceHelper extends \Codeception\Module
     }
 
     public function say($audiofilename, $duration) {
+      $this->proceedRespondAudio($audiofilename, $duration);
+    }
+
+    public function keepSilent() {
+      $this->proceedRespondAudio();
+    }
+
+    public function proceedRespondAudio($audiofilename=null, $duration=null) {
       while (TRUE) {
 	if (!$this->readGenerator->valid()) {
 	  break;
 	}
-	$output = $this->readGenerator->current();
+	$output = $this->readGenerator->current();     
 	if ($output === "record") {
-	  $output = $this->readGenerator->send(new VoiceXMLAudioRecord($audiofilename, $duration));
-	  $this->assertTrue(true);
+	  if ($audiofilename !== null) {
+	    $output = $this->readGenerator->send(new VoiceXMLAudioRecord($audiofilename, $duration));
+	  } else {
+	    $output = $this->readGenerator->send(null);
+	  }
+	  return $this->assertTrue(true);
+	  
 	}
-	$this->readGenerator->next();
+	$this->readGenerator->send(null);
       }
       return $this->fail("never got to chance to talk");
-    }
 
-    public function keepSilent() {
     }
 
     public function hangUp() {
