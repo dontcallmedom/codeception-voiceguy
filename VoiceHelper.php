@@ -1,9 +1,9 @@
 <?php
-require 'vendor/autoload.php';
-
 namespace Codeception\Module;
 use Codeception\Exception\ModuleConfig as ModuleConfigException;
-user VoiceBrowser\VoiceBrowser;
+use VoiceBrowser\VoiceBrowser, VoiceBrowser\VoiceXMLEventHandler;
+
+require 'vendor/autoload.php';
 
 // here you can define custom functions for VoiceGuy 
 
@@ -19,6 +19,8 @@ class VoiceHelper extends \Codeception\Module
     public $headers = array();
     public $params = array();
     public $response = "";
+    protected $loaded = false;
+    protected $readGenerator;
 
     public function _before(\Codeception\TestCase $test)
     {
@@ -42,11 +44,16 @@ class VoiceHelper extends \Codeception\Module
                 throw new ModuleConfigException(__CLASS__, "Client for VoiceXML requests not initialized.\nProvide either PhpBrowser module, or a framework module which shares FrameworkInterface");
             }
         }
+	$this->eventhandler = new VoiceXMLEventHandler();
+    }
+
+    public function _after() {
     }
 
     public function call($url, $params = array()) {
-      $this->assertTrue(VoiceBrowser::fetch($url, "GET", $params, $this->client));
-  
+      $this->loaded = VoiceBrowser::fetch($url, "GET", $params, $this->guzzle);
+      $this->assertTrue($this->loaded);
+      $this->readGenerator = VoiceBrowser::play();
     }
 
     public function hearText($text) {
@@ -60,13 +67,31 @@ class VoiceHelper extends \Codeception\Module
     }
 
     public function hearAudio($filename) {
+      $this->assert($this->proceedHearAudio($filename));
     }
 
     public function dontHearAudio($filename) {
+      $this->assertNot($this->proceedHearAudio($filename));
     }
 
     protected function proceedHearAudio($filename) {
-      // return array('Equals',md5_file($filename),md5_file($playing));
+      $md5 = md5_file($filename);
+      while (TRUE) {
+	if (!$this->readGenerator->valid()) {
+	  break;
+	}
+	$output = $this->readGenerator->current();
+	if (is_object($output) && property_exists($output,"audios") && count($output->audios) > 0) {
+	  foreach ($output->audios as $a) {
+	    $res = array('Equals', $md5, md5_file($a));
+	    if ($res) {
+	      return $res;
+	    }
+	  }
+	}
+	$output = $this->readGenerator->next();
+      }
+      return array('Equals', $md5, md5_file($a));
     }
 
 
