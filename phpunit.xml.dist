@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<phpunit bootstrap="tests/_bootstrap.php">
+
+    <testsuites>
+        <testsuite name="The project's test suite">
+            <directory>./tests</directory>
+        </testsuite>
+    </testsuites>
+    <php>
+      <const name="WEB_SERVER_HOST" value="localhost" />
+      <const name="WEB_SERVER_PORT" value="1349" />
+      <const name="WEB_SERVER_DOCROOT" value="tests/data" />
+    </php>
+</phpunit>
