@@ -1,7 +1,7 @@
 <?php
 namespace Codeception\Module;
 use Codeception\Exception\ModuleConfig as ModuleConfigException;
-use VoiceBrowser\VoiceBrowser, VoiceBrowser\VoiceXMLEventHandler;
+use VoiceBrowser\VoiceBrowser, VoiceBrowser\VoiceXMLAudioRecord;
 
 require 'vendor/autoload.php';
 
@@ -44,7 +44,6 @@ class VoiceHelper extends \Codeception\Module
                 throw new ModuleConfigException(__CLASS__, "Client for VoiceXML requests not initialized.\nProvide either PhpBrowser module, or a framework module which shares FrameworkInterface");
             }
         }
-	$this->eventhandler = new VoiceXMLEventHandler();
     }
 
     public function _after() {
@@ -139,7 +138,19 @@ class VoiceHelper extends \Codeception\Module
     public function pressNoKey() {
     }
 
-    public function say($text, $duration) {
+    public function say($audiofilename, $duration) {
+      while (TRUE) {
+	if (!$this->readGenerator->valid()) {
+	  break;
+	}
+	$output = $this->readGenerator->current();
+	if ($output === "record") {
+	  $output = $this->readGenerator->send(new VoiceXMLAudioRecord($audiofilename, $duration));
+	  $this->assertTrue(true);
+	}
+	$this->readGenerator->next();
+      }
+      return $this->fail("never got to chance to talk");
     }
 
     public function keepSilent() {
