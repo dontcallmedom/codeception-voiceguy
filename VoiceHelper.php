@@ -1,5 +1,5 @@
 <?php
-namespace Codeception\Module;
+namespace SBC4D;
 use Codeception\Exception\ModuleConfig as ModuleConfigException;
 use VoiceBrowser\VoiceBrowser, VoiceBrowser\VoiceXMLAudioRecord;
 
