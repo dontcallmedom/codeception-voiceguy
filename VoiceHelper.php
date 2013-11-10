@@ -57,13 +57,30 @@ class VoiceHelper extends \Codeception\Module
     }
 
     public function hearText($text) {
+      $this->assert($this->proceedHearText($text));
     }
 
     public function dontHearText($text) {
+      $this->assertNot($this->proceedHearText($text));
     }
 
     protected function proceedHearText($text) {
-
+      while (TRUE) {
+	if (!$this->readGenerator->valid()) {
+	  break;
+	}
+	$output = $this->readGenerator->current();
+	if (is_object($output) && property_exists($output,"texts") && count($output->texts) > 0) {
+	  foreach ($output->texts as $t) {
+	    if ($text === trim($t)) {
+	      return array('Equals', $text, trim($t));
+	    }
+	  }
+	}
+	$output = $this->readGenerator->next();
+      }
+      return array('True', false);
+      
     }
 
     public function hearAudio($filename) {
@@ -83,15 +100,14 @@ class VoiceHelper extends \Codeception\Module
 	$output = $this->readGenerator->current();
 	if (is_object($output) && property_exists($output,"audios") && count($output->audios) > 0) {
 	  foreach ($output->audios as $a) {
-	    $res = array('Equals', $md5, md5_file($a));
-	    if ($res) {
-	      return $res;
+	    if ($md5 === md5_file($a)) {
+	      return array('Equals', $md5, md5_file($a));
 	    }
 	  }
 	}
 	$output = $this->readGenerator->next();
       }
-      return array('Equals', $md5, md5_file($a));
+      return array('True', false);
     }
 
 
