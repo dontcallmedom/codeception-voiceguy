@@ -18,7 +18,7 @@
         "codeception/codeception": "*"
     },
     "autoload": {
-        "psr-0": { "SBC4D\\": "./" }
+        "psr-0": { "Codeception\\Module\\": "./" }
     }
 
 }
