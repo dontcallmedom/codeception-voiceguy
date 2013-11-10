@@ -12,7 +12,13 @@
     	{ "name": "Dominique Hazaël-Massieux"}
     ], 
     "require": {
-        "codeception/codeception": "*",
 	"sbc4d/voicebrowser": "dev-master"
+    },
+    "require-dev": {
+        "codeception/codeception": "*"
+    },
+    "autoload": {
+        "psr-0": { "SBC4D\\": "./" }
     }
+
 }
