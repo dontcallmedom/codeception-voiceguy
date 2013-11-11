@@ -117,12 +117,32 @@ class VoiceHelper extends \Codeception\Module
     }
 
     public function getPromptedToSpeak() {
+      $this->proceedRespondAudio(false);
     }
 
     public function dontGetPromptedToSpeak() {
+      $this->assertNot($this->proceedRespondAudio(false));
     }
 
-    protected function proceedGetPromptedToSpeak() {
+    protected function proceedGetPromptedToSpeak($respond = false, $audiofilename=null, $duration=null) {
+      while (TRUE) {
+	if (!$this->readGenerator->valid()) {
+	  break;
+	}
+	$output = $this->readGenerator->current();     
+	if ($output === "record") {
+	  if ($respond) {
+	    if ($audiofilename !== null) {
+	      $output = $this->readGenerator->send(new VoiceXMLAudioRecord($audiofilename, $duration));
+	    } else {
+	      $output = $this->readGenerator->send(null);
+	    }
+	  }
+	  return $this->assertTrue(true);
+	}
+	$this->readGenerator->send(null);
+      }
+      return $this->fail("never got to chance to talk");
     }
 
     public function pressKey($key) {
@@ -144,24 +164,7 @@ class VoiceHelper extends \Codeception\Module
     }
 
     public function proceedRespondAudio($audiofilename=null, $duration=null) {
-      while (TRUE) {
-	if (!$this->readGenerator->valid()) {
-	  break;
-	}
-	$output = $this->readGenerator->current();     
-	if ($output === "record") {
-	  if ($audiofilename !== null) {
-	    $output = $this->readGenerator->send(new VoiceXMLAudioRecord($audiofilename, $duration));
-	  } else {
-	    $output = $this->readGenerator->send(null);
-	  }
-	  return $this->assertTrue(true);
-	  
-	}
-	$this->readGenerator->send(null);
-      }
-      return $this->fail("never got to chance to talk");
-
+      return $this->proceedGetPromptedToSpeak(true, $audiofilename, $duration);
     }
 
     public function hangUp() {

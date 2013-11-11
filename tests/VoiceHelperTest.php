@@ -30,6 +30,12 @@ class VoiceHelperTest extends \PHPUnit_Framework_TestCase {
       $this->module->hearText("Please tell us who you are");
     }
 
+
+    public function testGetPromptedToSpeak() {
+      $this->testCall();
+      $this->module->getPromptedToSpeak();
+    }
+
     public function testSay() {
       $this->module->call('http://localhost:1349/test.vxml', 'GET');
       $this->testCall();
@@ -41,4 +47,5 @@ class VoiceHelperTest extends \PHPUnit_Framework_TestCase {
       $this->module->keepSilent();
       $this->module->hearText("So, who are you?");
     }
+
 }
