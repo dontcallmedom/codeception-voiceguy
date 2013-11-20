@@ -47,6 +47,10 @@ class VoiceHelper extends \Codeception\Module
     public function _after() {
     }
 
+    public function amCallingFrom($callerid) {
+      VoiceBrowser::setCallerId($callerid);
+    }
+
     public function call($url, $params = array()) {
       $this->loaded = VoiceBrowser::fetch($url, "GET", $params, $this->guzzle);
       $this->assertTrue($this->loaded);
